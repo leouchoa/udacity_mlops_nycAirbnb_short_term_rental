@@ -100,27 +100,34 @@ def go(args):
         shutil.rmtree("random_forest_dir")
 
     signature = mlflow.models.infer_signature(X_val, y_pred)
-    
-    mlflow.sklearn.save_model(
-            sk_pipe,
-            path="random_forest_dir",
-            serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE,
-            signature=signature,
-            input_example=X_val.iloc[:5],
-        )
 
-    logger.info('Create Artifact to store model')
-    artifact = wandb.Artifact(
+    with tempfile.TemporaryDirectory() as temp_dir:
+
+        export_path = os.path.join(
+            temp_dir,
+            "random_forest_dir"
+            )
+
+        mlflow.sklearn.save_model(
+                sk_pipe,
+                export_path,
+                serialization_format=mlflow.sklearn.SERIALIZATION_FORMAT_CLOUDPICKLE,
+                signature=signature,
+                input_example=X_val.iloc[:2],
+            )
+
+        artifact = wandb.Artifact(
             args.output_artifact,
             type="model_export",
             description="Random Forest pipeline export",
+            metadata=rf_config
         )
 
-    artifact.add_dir(local_path='random_forest_dir')
+        artifact.add_dir(export_path)
 
-    run.log_artifact(artifact)
-
-    artifact.wait()
+        run.log_artifact(artifact)
+        # Make sure the artifact is uploaded before the temp dir gets deleted
+        artifact.wait()
 
     # Plot feature importance
     fig_feat_imp = plot_feature_importance(sk_pipe, processed_features)
@@ -128,9 +135,9 @@ def go(args):
     # Here we save r_squared under the "r2" key
     run.summary['r2'] = r_squared
     # Now log the variable "mae" under the key "mae".
-    run.summary["mae"] = mae
+    run.summary['mae'] = mae
 
-    # Upload to W&B the feture importance visualization
+    # Upload to W&B the feature importance visualization
     run.log(
         {
           "feature_importance": wandb.Image(fig_feat_imp),
@@ -154,7 +161,13 @@ def plot_feature_importance(pipe, feat_names):
     fig_feat_imp, sub_feat_imp = plt.subplots(figsize=(10, 10))
     # idx = np.argsort(feat_imp)[::-1]
 
-    sub_feat_imp.bar(range(feat_imp.shape[0]), feat_imp, color="r", align="center")
+    sub_feat_imp.bar(
+        range(feat_imp.shape[0]),
+        feat_imp,
+        color="r",
+        align="center"
+        )
+
     _ = sub_feat_imp.set_xticks(range(feat_imp.shape[0]))
     _ = sub_feat_imp.set_xticklabels(np.array(feat_names), rotation=90)
     fig_feat_imp.tight_layout()
@@ -182,7 +195,7 @@ def get_inference_pipeline(rf_config, max_tfidf_features):
         OneHotEncoder()
     )
 
-    # Let's impute the numerical columns to make sure we can handle missing values
+    # Impute the numerical columns to make sure we can handle missing values
     # (note that we do not scale because the RF algorithm does not need that)
     zero_imputed = [
         "minimum_nights",
@@ -263,13 +276,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--trainval_artifact",
         type=str,
-        help="Artifact containing the training dataset. It will be split into train and validation"
+        help="Artifact containing the training dataset."
+        "It will be split into train and validation"
     )
 
     parser.add_argument(
         "--val_size",
         type=float,
-        help="Size of the validation split. Fraction of the dataset, or number of items",
+        help="Size of the validation split."
+        "Fraction of the dataset, or number of items",
     )
 
     parser.add_argument(
@@ -290,7 +305,7 @@ if __name__ == "__main__":
 
     parser.add_argument(
         "--rf_config",
-        help="Random forest configuration. A JSON dict that will be passed to the "
+        help="Random forest configuration. A JSON dict that will be passed to"
         "scikit-learn constructor for RandomForestRegressor.",
         default="{}",
     )
