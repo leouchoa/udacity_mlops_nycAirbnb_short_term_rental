@@ -186,3 +186,8 @@ Some next steps to improve the pipeline are:
 - Extend the pipeline routines to incorporate more models, like xgboost and svm.
 - shoot a video explaining how to tag an artifact as production.
 - add model deployment instructions (online,offline, docker image)
+
+# Important urls:
+
+- [weights and biases public project](https://wandb.ai/leouchoa/nyc_airbnb/overview?workspace=user-leouchoa)
+- [github link](https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental)
