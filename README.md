@@ -129,6 +129,17 @@ mlflow run . \
 
 For even more features, like bayesian optimization and parallel runs, please refer to the hydra documentation. 
 
+### Running the Release From Github 
+
+In this repository there's also a [release](https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental/releases) version of the pipeline. You can can use the release to automatically run the training pipeline without cloning the repo, just by having followed the instructions in the setup. 
+
+To run the latest release at thist points version 1.0.1) from github use in a different sample dataset use:
+
+```
+mlflow run -v 1.0.1 https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental.git -P hydra_options="etl.sample='sample2.csv'"
+```
+
+
 ### In case of errors
 
 When you make an error writing your `conda.yml` file, you might end up with an environment for the pipeline or one of the components that is corrupted. Most of the time `mlflow` realizes that and creates a new one every time you try to fix the problem. However, sometimes this does not happen, especially if the problem was in the `pip` dependencies. In that case, you might want to clean up all conda environments created by `mlflow` and try again. In order to do so, you can get a list of the environments you are about to remove by executing:
@@ -146,6 +157,8 @@ for e in $(conda info --envs | grep mlflow | cut -f1 -d" "); do conda uninstall 
 ```
 
 This will iterate over all the environments created by mlflow and remove them.
+
+### Scoring and Selecting Production Model
 
 # Topics to be added to the README file
 
