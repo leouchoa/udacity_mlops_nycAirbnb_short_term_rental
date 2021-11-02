@@ -15,6 +15,28 @@ This pipeline can be almost entirely run on it's own, you'll just need to setup 
 - [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 - [python 3](https://www.python.org/downloads/)
 
+Please install python3 and conda by following the instruction in the bullet links. Next we will setup the conda development environment and your weights and biases authorization.
+
+### Conda Environment Creation
+
+Make sure to have conda installed and ready, then create a new environment using the `environment.yml` file provided in the root of the repository and activate it:
+
+```
+conda env create -f environment.yml
+conda activate nyc_airbnb_dev
+```
+
+### Get API key for Weights and Biases
+
+Let's make sure we are logged in to Weights & Biases. Get your API key from W&B by going to [https://wandb.ai/authorize](https://wandb.ai/authorize) and click on the + icon (copy to clipboard), then paste your key into this command:
+```
+> wandb login [your API key]
+```
+You should see a message similar to:
+```
+wandb: Appending key for api.wandb.ai to your netrc file: /home/[your username]/.netrc
+```
+
 ## Pipeline Snapshot
 
 The pipeline constructed will work in a similar fashion to the one describe in the picture bellow and it has 7 major steps:
