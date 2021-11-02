@@ -180,14 +180,14 @@ This will iterate over all the environments created by mlflow and remove them.
 
 Some next steps to improve the pipeline are:
 
-- Add more feature engineering to the process in order to improve the model scoring metrics.
-- Make use of [optuna](https://github.com/optuna/optuna) to improve hyperparameter optimization. A guide on how to implement optuna in the mlflow/hydra setup can be found [in this medium article](https://medium.com/optuna/easy-hyperparameter-management-with-hydra-mlflow-and-optuna-783730700e7d)
-- Improve testing routines and their documentation with [great expectations](https://greatexpectations.io/).
-- Extend the pipeline routines to incorporate more models, like xgboost and svm.
-- shoot a video explaining how to tag an artifact as production.
-- add model deployment instructions (online,offline, docker image)
-- add hooks (black formating)
-- add descriptions to `MLproject` of `basic_cleaning` folder
+- [] Add more feature engineering to the process in order to improve the model scoring metrics.
+- [] Make use of [optuna](https://github.com/optuna/optuna) to improve hyperparameter optimization. A guide on how to implement optuna in the mlflow/hydra setup can be found [in this medium article](https://medium.com/optuna/easy-hyperparameter-management-with-hydra-mlflow-and-optuna-783730700e7d)
+- [] Improve testing routines and their documentation with [great expectations](https://greatexpectations.io/).
+- [] Extend the pipeline routines to incorporate more models, like xgboost and svm.
+- [] shoot a video explaining how to tag an artifact as production.
+- [] add model deployment instructions (online,offline, docker image)
+- [] add hooks (black formating)
+- [] add descriptions to `MLproject` of `basic_cleaning` folder
 
 # Important urls:
 
