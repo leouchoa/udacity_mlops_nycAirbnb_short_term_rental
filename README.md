@@ -186,6 +186,8 @@ Some next steps to improve the pipeline are:
 - Extend the pipeline routines to incorporate more models, like xgboost and svm.
 - shoot a video explaining how to tag an artifact as production.
 - add model deployment instructions (online,offline, docker image)
+- add hooks (black formating)
+- add descriptions to `MLproject` of `basic_cleaning` folder
 
 # Important urls:
 
