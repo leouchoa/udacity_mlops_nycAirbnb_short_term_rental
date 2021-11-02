@@ -9,17 +9,28 @@ The goal of this project is to make the end-to-end machine learning pipeline in 
 
 ## Setup
 
-This pipeline can be almost entirely run on it's own, you'll just need to setup 3 things:
+This pipeline can be almost entirely run on it's own, you'll just need to setup 4 things:
 
 - [weights and biases](wandb.ai/)
 - [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/)
 - [python 3](https://www.python.org/downloads/)
+- [git](https://git-scm.com/downloads)
 
-Please install python3 and conda by following the instruction in the bullet links. Next we will setup the conda development environment and your weights and biases authorization.
+Please install python3, conda and git by following the instruction in the bullet links. Next we will setup the conda development environment and your Weights and Biases authorization.
+
+### Cloning the Repo
+
+You can get a local copy of the repository by using the following command:
+
+```
+git clone https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental.git
+```
+
+After that step into the `udacity_mlops_nycAirbnb_short_term_rental` folder.
 
 ### Conda Environment Creation
 
-Make sure to have conda installed and ready, then create a new environment using the `environment.yml` file provided in the root of the repository and activate it:
+Make sure to have conda installed and ready, then create the development environment using the `environment.yml` file provided in the root of the repository and activate it:
 
 ```
 conda env create -f environment.yml
@@ -39,7 +50,7 @@ wandb: Appending key for api.wandb.ai to your netrc file: /home/[your username]/
 
 ## Pipeline Snapshot
 
-The pipeline constructed will work in a similar fashion to the one describe in the picture bellow and it has 7 major steps:
+The pipeline constructed will work in a similar fashion to the one describe in the picture bellow and it can be described in 7 steps:
 
 1. Fetch data
 2. Pre-processing
@@ -51,8 +62,42 @@ The pipeline constructed will work in a similar fashion to the one describe in t
 
 ![Pipeline snapshot](ml_pipeline.PNG)
 
+## How to Use 
 
-## How to Use
+The 7 pipeline steps are present in the `src` and `components` folders. The `src` is has 4 major steps: 
+
+a. `eda`: the exploratory data analysis used to understand data and discover important feature engineering strategies.
+b. `basic_cleaning`: data treatment step necessary to fix or remove problematic data points.
+c. `data_check`: testing of the data treatment step, necessary to ensure that the basic cleaning step went as expected.
+d. `train_random_forest`: encompasses data segregation and model training.
+
+while the `components` folder has some subtasks of `train_random_forest` and also the data fetching step. 
+
+To make the entire pipeline run automatically you can use:
+
+```
+mlflow run .
+```
+
+but you can also call individual steps with
+
+```
+mlflow run . -P steps="your_desired_step_here"
+```
+
+which are "download", "basic_cleaning", "data_check", "data_split", "train_random_forest" (described in [`main.py`](https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental/blob/master/main.py)). So for example to run the "download" step use:
+ 
+ ```
+mlflow run . -P steps="download"
+```
+
+and to run multiple steps you can, for example run:
+
+```
+mlflow run . -P steps="download,basic_cleaning,data_check"
+```
+
+
 
 # Topics to be added to the README file
 
