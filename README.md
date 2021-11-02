@@ -97,7 +97,55 @@ and to run multiple steps you can, for example run:
 mlflow run . -P steps="download,basic_cleaning,data_check"
 ```
 
+### Customizing a Step
 
+You can also customize each step call. Steps are controlled by the [`hydra`](https://hydra.cc/) package, which is a framework to configure complex applications. The customizable pipeline parameters are contained in the [`config.yaml`](https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental/blob/master/config.yaml) file. 
+
+So for example if you want to run the entire pipeline with default parameters, but also want to change the random forest `n_estimators` and the etl step parameter `min_price`, you can run:
+
+```
+mlflow run . -P hydra_options="modeling.random_forest.n_estimators=10 etl.min_price=50"
+```
+
+according to the way specified in the [`config.yaml`](https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental/blob/master/config.yaml) file. Another example is:
+
+```
+mlflow run . \
+  -P steps=download,basic_cleaning,data_check \
+  -P hydra_options="data_check.kl_threshold=0.01 etl.min_price=50"
+```
+
+where we change the etl step parameter `min_price` and the data_check param `kl_threshold`.
+
+### Multiple Runs
+
+Another feature of this implementation is that you can make multiple runs. Example:
+
+```
+mlflow run . \
+  -P steps=train_random_forest \
+  -P hydra_options="modeling.random_forest.max_depth=10,50,100 modeling.random_forest.n_estimators=100,200,500 -m"
+```
+
+For even more features, like bayesian optimization and parallel runs, please refer to the hydra documentation. 
+
+### In case of errors
+
+When you make an error writing your `conda.yml` file, you might end up with an environment for the pipeline or one of the components that is corrupted. Most of the time `mlflow` realizes that and creates a new one every time you try to fix the problem. However, sometimes this does not happen, especially if the problem was in the `pip` dependencies. In that case, you might want to clean up all conda environments created by `mlflow` and try again. In order to do so, you can get a list of the environments you are about to remove by executing:
+
+```
+conda info --envs | grep mlflow | cut -f1 -d" "
+```
+
+If you are ok with that list, execute this command to clean them up:
+
+**NOTE**: this will remove ALL the environments with a name starting with mlflow. Use at your own risk
+
+```
+for e in $(conda info --envs | grep mlflow | cut -f1 -d" "); do conda uninstall --name $e --all -y;done
+```
+
+This will iterate over all the environments created by mlflow and remove them.
 
 # Topics to be added to the README file
 
