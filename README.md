@@ -85,7 +85,7 @@ but you can also call individual steps with
 mlflow run . -P steps="your_desired_step_here"
 ```
 
-which are "download", "basic_cleaning", "data_check", "data_split", "train_random_forest" (described in [`main.py`](https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental/blob/master/main.py)). So for example to run the "download" step use:
+which are "download", "basic_cleaning", "data_check", "data_split", "train_random_forest" and "test_regression_model" (described in [`main.py`](https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental/blob/master/main.py)). So for example to run the "download" step use:
  
  ```
 mlflow run . -P steps="download"
@@ -139,6 +139,24 @@ To run the latest release at thist points version 1.0.1) from github use in a di
 mlflow run -v 1.0.1 https://github.com/leouchoa/udacity_mlops_nycAirbnb_short_term_rental.git -P hydra_options="etl.sample='sample2.csv'"
 ```
 
+### Selecting Production Model and Test Set Scoring with the `test_regression_model` Step
+
+This step is use to test your production model against the test set and does not occur automatically: it must be manually triggered. The reason for this is that it requires a production-tagged weights and biases run. 
+
+After the `train_random_forest` (specially if you use multiple runs, as described in the Multiple Runs section), you must go to weights and biases and tag a run. In the figure bellow you can see that the output of the `vivid-sun-39` run has a "prod" tag, along with the "v15" tag. So if you run the pipeline you also must to go your Weights and Biases project, select the run that provides the best evaluation metric (you can find helpful statistics under the table tab in the left side) and mark is as "prod".
+
+![](wandb_production_tag.png)
+
+After that you can use
+
+```
+mlflow run . -P steps="test_regression_model"
+```
+to score you final model against the test set. Now if you go to your Weights and Biases account, then to the "prod"-tagged run and then click in the "Graph view" tab, you should see a graph similar to this:
+
+![](wandb_full_pipeline_graphViz.png)
+
+That's the end of the pipeline and means everything went well.
 
 ### In case of errors
 
@@ -158,9 +176,6 @@ for e in $(conda info --envs | grep mlflow | cut -f1 -d" "); do conda uninstall 
 
 This will iterate over all the environments created by mlflow and remove them.
 
-### Scoring and Selecting Production Model
-
-
 # Next Steps
 
 Some next steps to improve the pipeline are:
@@ -169,6 +184,7 @@ Some next steps to improve the pipeline are:
 - Make use of [optuna](https://github.com/optuna/optuna) to improve hyperparameter optimization. A guide on how to implement optuna in the mlflow/hydra setup can be found [in this medium article](https://medium.com/optuna/easy-hyperparameter-management-with-hydra-mlflow-and-optuna-783730700e7d)
 - Improve testing routines and their documentation with [great expectations](https://greatexpectations.io/).
 - Extend the pipeline routines to incorporate more models, like xgboost and svm.
+- shoot a video explaining how to tag an artifact as production.
 
 # Topics to be added to the README file
 
