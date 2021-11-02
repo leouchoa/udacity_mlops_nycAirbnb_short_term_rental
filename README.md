@@ -27,7 +27,7 @@ The pipeline constructed will work in a similar fashion to the one describe in t
 6. Model testing
 7. Deployment
 
-![Pipeline snapshot](picture.here)
+![Pipeline snapshot](ml_pipeline.PNG)
 
 
 ## How to Use
